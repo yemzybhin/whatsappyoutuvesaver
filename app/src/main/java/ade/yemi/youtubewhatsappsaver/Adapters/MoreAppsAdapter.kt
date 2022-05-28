@@ -26,11 +26,9 @@ class MoreAppsAdapter (private val items: List<App>): RecyclerView.Adapter<MoreA
     }
 
     override fun onBindViewHolder(holder: MoreAppsAdapter.MyViewHolder, position: Int) {
-
         holder.bind(items[position])
     }
     class MyViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-
         val image = view.findViewById<ImageView>(R.id.iv_moreappsimage)
         val appname = view.findViewById<TextView>(R.id.tv_appnameonplaystore)
         val button = view.findViewById<ImageView>(R.id.iv_downloadapp)

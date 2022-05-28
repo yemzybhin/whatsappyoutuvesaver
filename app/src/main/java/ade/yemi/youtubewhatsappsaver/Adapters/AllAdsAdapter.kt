@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide
 class AllAdsAdapter ( private val items: List<Ads>): RecyclerView.Adapter<AllAdsAdapter.MyViewHolder>() {
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AllAdsAdapter.MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val inflater = LayoutInflater.from(parent.context).inflate(R.layout.myvideo_ad, parent, false)
         return MyViewHolder(inflater)
     }
@@ -31,12 +31,10 @@ class AllAdsAdapter ( private val items: List<Ads>): RecyclerView.Adapter<AllAds
         return items.size
     }
 
-    override fun onBindViewHolder(holder: AllAdsAdapter.MyViewHolder, position: Int) {
-
+    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         holder.bind(items[position])
     }
     class MyViewHolder(val view: View): RecyclerView.ViewHolder(view) {
-
         var adspace = view.findViewById<LinearLayout>(R.id.adspace)
         var message = view.findViewById<TextView>(R.id.addmessage)
         var title = view.findViewById<TextView>(R.id.addtitle)
@@ -109,8 +107,6 @@ class AllAdsAdapter ( private val items: List<Ads>): RecyclerView.Adapter<AllAds
                     adbutton.visibility = View.GONE
                     postad.visibility = View.GONE
                 }
-                prefereceStuffs.setPoint(prefereceStuffs.getPoint() + 1)
-                Toast.makeText(view.context, "Ads loaded, you have gotten 1 Extra Point For Each AD", Toast.LENGTH_LONG).show()
             }else{
                 adspace.visibility= View.GONE
             }

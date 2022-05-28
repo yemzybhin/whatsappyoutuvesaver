@@ -4,6 +4,7 @@ import ade.yemi.moreapps.Network.RetrofitInterface1
 import ade.yemi.moreapps.models.AppContent
 import ade.yemi.youtubewhatsappsaver.Activities.Activity2
 import ade.yemi.youtubewhatsappsaver.Adapters.AllAdsAdapter
+import ade.yemi.youtubewhatsappsaver.Data.Preferencestuff
 import android.os.Bundle
 import android.view.View
 import ade.yemi.youtubewhatsappsaver.R
@@ -23,6 +24,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class AllAds : BaseViewStubFragment(){
     private lateinit var  myAdapter: RecyclerView.Adapter<*>
     private lateinit var manager: RecyclerView.LayoutManager
+
+
     override fun onCreateViewAfterViewStubInflated(view: View, savedInstanceState: Bundle?) {
         var recyclerView = view.findViewById<RecyclerView>(R.id.recyclerview)
         var cancel = view.findViewById<CardView>(R.id.pastquestionscancel)
@@ -54,13 +57,19 @@ class AllAds : BaseViewStubFragment(){
                 var appContent: AppContent? = response.body() as AppContent
                 var adslist = appContent?.ads
 
-                progressBar.visibility = View.GONE
-
                 recyclerView.apply {
                     myAdapter = AllAdsAdapter(adslist!!)
                     layoutManager = manager
                     adapter = myAdapter
                 }
+
+                if (adslist!!.size != 0){
+                    var totalads = adslist!!.size * 1
+                    var prefereceStuffs = Preferencestuff(requireContext())
+                    prefereceStuffs.setPoint(prefereceStuffs.getPoint() + totalads)
+                    Toast.makeText(requireContext(), "Ads loaded, you have gotten 1 Extra Point For Each AD", Toast.LENGTH_LONG).show()
+                }
+                progressBar.visibility = View.GONE
             }
             override fun onFailure(call: Call<AppContent?>, t: Throwable) {
                 Toast.makeText(requireContext(), "Could not load Ads. Check connection", Toast.LENGTH_SHORT).show()

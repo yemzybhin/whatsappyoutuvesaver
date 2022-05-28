@@ -167,14 +167,18 @@ fun downloadvideo(values : String, context: Context){
                 var title = "$videoTitle"
                 var request = DownloadManager.Request(Uri.parse(newlink))
 
+                var preferencestuff = Preferencestuff(context)
+                preferencestuff.setPoint(preferencestuff.getPoint() - 10)
+
                 request.setTitle(title)
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                //request.setDestinationInExternalFilesDir(requireContext(),Environment.DIRECTORY_DOWNLOADS, filename)
                 request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
                 val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                 request.allowScanningByMediaScanner()
                 request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
                 manager!!.enqueue(request)
+
+                Toast.makeText(context, "Download Starting, 10 points removed", Toast.LENGTH_SHORT).show()
             }
         }
     }

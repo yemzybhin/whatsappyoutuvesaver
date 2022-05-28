@@ -18,27 +18,23 @@ import com.google.android.material.tabs.TabLayout
 
 class WhatsappPage : BaseViewStubFragment() {
     override fun onCreateViewAfterViewStubInflated(view: View, savedInstanceState: Bundle?) {
-        var viewpager = view.findViewById(R.id.viewpager) as ViewPager
-        var tabLayout = view.findViewById(R.id.tablayout) as TabLayout
+        var viewpager = view.findViewById<ViewPager>(R.id.viewpager)
+        var tabLayout = view.findViewById<TabLayout>(R.id.tablayout)
         var cancel = view.findViewById<CardView>(R.id.cancel)
         var icon = view.findViewById<ImageView>(R.id.icon)
         val animation = AnimationUtils.loadAnimation(context, R.anim.fading)
         icon.startAnimation(animation)
-
-        (activity as Activity2).checkpermmission()
-
         val whatsAppViewAdapter = WhatsAppViewAdapter(childFragmentManager)
         whatsAppViewAdapter.addfragment(VideoFrag(), "VIDEOS")
         whatsAppViewAdapter.addfragment(ImageFrag(), "IMAGES")
+        viewpager.adapter = whatsAppViewAdapter
+        tabLayout.setupWithViewPager(viewpager)
+
         cancel.setOnClickListener {
             cancel.clicking()
             startActivity(Intent(requireContext(), MainActivity::class.java))
         }
-
-        viewpager.adapter = whatsAppViewAdapter
-        tabLayout.setupWithViewPager(viewpager)
     }
-
     override fun getViewStubLayoutResource(): Int {
        return  R.layout.fragment_whatsapp_page
     }

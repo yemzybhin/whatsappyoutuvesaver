@@ -13,7 +13,7 @@ fun getImagePath(): ArrayList<String> {
     val file = File(Environment.getExternalStorageDirectory().toString() + ImageFrag.WHATSAPP_STATUS_FOLDER_PATH)
     val listFile = file.listFiles()
     if (listFile != null && listFile.isNullOrEmpty()) {
-        Arrays.sort(listFile)//, LastModifiedFileComparator.LASTMODIFIED_REVERSE)
+        Arrays.sort(listFile)
     }
     if (listFile != null) {
         for (imgFile in listFile) {

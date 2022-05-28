@@ -1,6 +1,5 @@
 package ade.yemi.youtubewhatsappsaver.Ultilities
 
-import ade.yemi.youtubewhatsappsaver.fragments.WhatsAppViewPager.ImageFrag
 import ade.yemi.youtubewhatsappsaver.fragments.WhatsAppViewPager.VideoFrag
 import android.os.Environment
 import java.io.File
@@ -14,7 +13,7 @@ fun getVideoPath(): ArrayList<String> {
     val file = File(Environment.getExternalStorageDirectory().toString() + VideoFrag.WHATSAPP_STATUS_FOLDER_PATHH)
     val listFile = file.listFiles()
     if (listFile != null && listFile.isNullOrEmpty()) {
-        Arrays.sort(listFile)//, LastModifiedFileComparator.LASTMODIFIED_REVERSE)
+        Arrays.sort(listFile)
     }
     if (listFile != null) {
         for (imgFile in listFile) {

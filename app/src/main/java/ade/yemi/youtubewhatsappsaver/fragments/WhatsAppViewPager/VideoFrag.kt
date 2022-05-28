@@ -32,8 +32,6 @@ class VideoFrag : BaseViewStubFragment() {
         var videoPath = getVideoPath()
         videoAdapter = VideoAdapter(videoPath, requireContext())
         recyclerView?.adapter = videoAdapter
-
-
     }
 
     override fun getViewStubLayoutResource(): Int {
