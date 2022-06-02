@@ -15,3 +15,8 @@ data class Ads(
         val VideoLink: String? = null,
         val SmallImagelink: String? = null
 )
+
+data class ShowYoutubeLayout(
+        val message: String? = null,
+        val success: Boolean
+)

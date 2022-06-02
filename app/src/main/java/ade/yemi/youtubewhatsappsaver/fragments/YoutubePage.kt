@@ -1,7 +1,9 @@
 package ade.yemi.youtubewhatsappsaver.fragments
 
 import ade.yemi.moreapps.Network.RetrofitInterface1
+import ade.yemi.moreapps.Network.RetrofitInterface2
 import ade.yemi.moreapps.models.AppContent
+import ade.yemi.moreapps.models.ShowYoutubeLayout
 import ade.yemi.youtubewhatsappsaver.Activities.Activity2
 import ade.yemi.youtubewhatsappsaver.Activities.MainActivity
 import ade.yemi.youtubewhatsappsaver.Data.Preferencestuff
@@ -60,7 +62,20 @@ class YoutubePage : BaseViewStubFragment() {
         var adbutton = view.findViewById<TextView>(R.id.adbuttonlink)
         var postad = view.findViewById<TextView>(R.id.postanad)
         var videolink2 = view.findViewById<CardView>(R.id.watchadvideo)
-        
+
+
+        var loadinglayout = view.findViewById<ProgressBar>(R.id.instructionsloading)
+        var youtubelayout = view.findViewById<LinearLayout>(R.id.youtubestuff)
+        var reloadlayout = view.findViewById<Button>(R.id.reloadlayout)
+
+        reloadlayout.visibility = View.GONE
+        youtubelayout.visibility = View.GONE
+
+        getdata1(loadinglayout, youtubelayout, reloadlayout)
+        reloadlayout.setOnClickListener {
+            reloadlayout.clicking()
+            getdata1(loadinglayout, youtubelayout, reloadlayout)
+        }
         adslayout.visibility = View.GONE
         getdata(videolink2, adslayout, message, title, description, adimage, adbutton, postad)
 
@@ -165,6 +180,39 @@ class YoutubePage : BaseViewStubFragment() {
             }
             override fun onFailure(call: Call<AppContent?>, t: Throwable) {
                 adspace.visibility= View.GONE
+            }
+        })
+    }
+
+    private fun getdata1(progressBar: ProgressBar, linearLayout: LinearLayout, reload : Button){
+
+        var rf = Retrofit.Builder()
+                .baseUrl(RetrofitInterface2.BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+        var API = rf.create(RetrofitInterface2::class.java)
+        var call =API.post
+        call?.enqueue(object : Callback<ShowYoutubeLayout?> {
+            override fun onResponse(
+                    call: Call<ShowYoutubeLayout?>,
+                    response: Response<ShowYoutubeLayout?>
+            ) {
+                var appContent: ShowYoutubeLayout? = response.body() as ShowYoutubeLayout
+                progressBar.visibility = View.GONE
+                reload.visibility = View.GONE
+
+                var check = appContent!!.success
+
+                if (check == true) {
+                    linearLayout.visibility = View.VISIBLE
+                } else {
+                    linearLayout.visibility = View.GONE
+                }
+            }
+            override fun onFailure(call: Call<ShowYoutubeLayout?>, t: Throwable) {
+                Toast.makeText(requireContext(), "Kindly check your internet connection.", Toast.LENGTH_SHORT).show()
+                reload.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
             }
         })
     }
