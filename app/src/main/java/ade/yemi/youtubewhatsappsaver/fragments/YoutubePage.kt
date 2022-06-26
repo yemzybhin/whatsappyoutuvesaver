@@ -32,10 +32,6 @@ import android.util.SparseArray
 import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import at.huber.youtubeExtractor.VideoMeta
-import at.huber.youtubeExtractor.YouTubeUriExtractor
-import at.huber.youtubeExtractor.YtFile
 import com.bumptech.glide.Glide
 import retrofit2.Call
 import retrofit2.Callback

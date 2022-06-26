@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
         var adimage = findViewById<ImageView>(R.id.adimage)
         var admessage = findViewById<TextView>(R.id.message)
 
+
         var preferencestuff = Preferencestuff(this)
         points.text = "${preferencestuff.getPoint()} Points"
 

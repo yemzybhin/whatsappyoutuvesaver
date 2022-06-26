@@ -103,10 +103,11 @@
                 android:background="@color/primarycolor3"></View>
 
             <TextView
+                android:id="@+id/home_youdisplay1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/productsansbold"
-                android:text="WhatsApp\nYoutube Saver"
+                android:text="WhatsApp\nOnline Video\nSaver"
                 android:gravity="center"
                 android:textColor="@color/primarycolor3"
                 android:textSize="16sp"
@@ -141,6 +142,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/home_youdisplay2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -149,7 +151,7 @@
                         android:layout_marginRight="20dp"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/productsansbold"
-                        android:text="YOUTUBE"
+                        android:text="ONLINE VIDEO"
                         android:textColor="@color/primarycolor1"
                         android:textSize="13sp"
                         android:textStyle="bold"></TextView>

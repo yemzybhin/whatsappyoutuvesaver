@@ -70,7 +70,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/productsansbold"
                 android:gravity="center"
-                android:text="Youtube"
+                android:text="Online Video"
                 android:textColor="@color/primarycolor3"
                 android:textSize="16sp"
                 android:textStyle="bold"></TextView>

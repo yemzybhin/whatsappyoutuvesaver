@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 class VideoFrag : BaseViewStubFragment() {
     companion object {
         const val WHATSAPP_STATUS_FOLDER_PATHH = "/WhatsApp/Media/.Statuses/"
+        const val WHATSAPP_STATUS_FOLDER_PATHH2 = "/WhatsApp Business/Media/.Statuses/"
     }
     private var recyclerView : RecyclerView? = null
     private var gridLayoutManager : GridLayoutManager? = null

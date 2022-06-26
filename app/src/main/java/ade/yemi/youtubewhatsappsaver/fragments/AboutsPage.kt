@@ -40,7 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
 
-const val AD_UNIT_ID = "ca-app-pub-2144911759176506/8650386682"
+const val AD_UNIT_ID = "ca-app-pub-2144911759176506/5399035215"
 
 class AboutsPage : Fragment() , PurchasesUpdatedListener {
     private var billingClient: BillingClient? = null
@@ -51,7 +51,6 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
 
     private var mIsLoading = false
     private var mRewardedAd: RewardedAd? = null
-
     private var adcheck = false
 
     override fun onCreateView(
@@ -331,7 +330,7 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
      */
     private fun verifyValidSignature(signedData: String, signature: String): Boolean {
         return try {
-            val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAgCOsMBnSknOWnyAuFBCgkeQvoy54C8uqzRHidJZVnIGOlmfMV9yiKcGlcS99LDjX7uOUtCjPTCsGTw0MpOf3a6vLOL0GSa6TM26dl7BSbTNWY3mULD2Ht6NTO4T1Oh1uTYSBEGR90HUijoTNGfpzuae+BK2MWO7hxLGxQddm8nRQil3UOqNHLj8dBhiXQntJk2hVZ/fxcs54NxrlOEDxvoNgvOhN1jM8lxJb5sdduJusvJ6l3byY+81rvTZKGV7cZhKUNz1Svk0eK630J8wPehITOt0+kZbwHmMmuvGvm8Vj1bBdZ/Wf9n5Ox5ZPxLv9VMx3F8F52XBGWG19hKBtqQIDAQAB"
+            val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6CfO87Dd5XZ1qFEte8Yx3iDG66swL5P/mawmeb/cNSFv2kO3r1GHae/TnHhnAcSdQaHRaV7bEFsJg/rp11UzshKQtu2WobCj49MfEHgrK12dOGLF2Tfbc5RMloCZu+ciSDZeuAhcnOBrCs1uNe6uqNNpmqTwHtH2MvSCxMDK/lzMH7DJ2uBvMup4OloGcIf8kiubMw86oG/6VdCyB+qzv3VRobDu+ov/o4yvidGtR8Hy8Ud5FNf43XomPLcT6O4/1BiwSP3KKDkZ0hnMA3jd1aGMo5RLX9ABaB32yTwiPTiS2xFnjRoyf0XofVgS8Bw4uSm1Zhd7IwuMBsscxiUJ9wIDAQAB"
                     ade.yemi.youtubewhatsappsaver.Ultilities.Security.verifyPurchase(base64Key, signedData, signature)
         } catch (e: IOException) {
             false
@@ -346,7 +345,7 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
     companion object {
         const val PREF_FILE = "MyPref"
         const val PURCHASE_KEY = "consumable"
-        const val PRODUCT_ID = "consumable"
+        const val PRODUCT_ID = "consumable1"
     }
     private fun getdata(loader: ProgressBar, retry: TextView, recyclerView: RecyclerView){
         var rf = Retrofit.Builder()

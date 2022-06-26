@@ -20,6 +20,7 @@ import kotlin.collections.ArrayList
 class ImageFrag : BaseViewStubFragment(){
     companion object {
         const val WHATSAPP_STATUS_FOLDER_PATH = "/WhatsApp/Media/.Statuses/"
+        const val WHATSAPP_STATUS_FOLDER_PATH2 = "/WhatsApp Business/Media/.Statuses/"
     }
     private var recyclerView : RecyclerView? = null
     private var gridLayoutManager : GridLayoutManager? = null
