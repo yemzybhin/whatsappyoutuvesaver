@@ -24,12 +24,3 @@ interface  RetrofitInterface{
     }
 
 }
-
-//interface RetrofitInterface2{
-//    @get:GET("jsonholder/youtubewhatsappsavershow1.json")
-//    val post: Call<ShowYoutubeLayout?>?
-//
-//    companion object{
-//        const val BASE_URL = "https://yemzybhin.github.io"
-//    }
-//}

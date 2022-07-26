@@ -17,8 +17,3 @@ data class Ads(
         @SerializedName("VideoLink")val VideoLink: String? = null,
         @SerializedName("SmallImagelink")val SmallImagelink: String? = null
 )
-
-//data class ShowYoutubeLayout(
-//        val message: String? = null,
-//        val success: Boolean
-//)

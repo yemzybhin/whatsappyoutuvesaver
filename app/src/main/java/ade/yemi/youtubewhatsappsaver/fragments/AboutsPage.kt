@@ -149,65 +149,6 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         }
         return view
     }
-//    private fun loadfacebookad(progressBar: ProgressBar){
-//        rewardedVideoAd = RewardedVideoAd(requireContext(), "429889565196930_429890685196818")
-//
-//        val rewardedVideoAdListener: RewardedVideoAdListener = object : RewardedVideoAdListener {
-//            override fun onError(ad: Ad?, error: com.facebook.ads.AdError) {
-//                // Rewarded video ad failed to load
-//                Toast.makeText(requireContext(), "Rewarded video ad failed to load: ", Toast.LENGTH_SHORT).show()
-//               // Log.e(TAG, "Rewarded video ad failed to load: " + error.getErrorMessage())
-//            }
-//
-//            override fun onAdLoaded(ad: Ad) {
-//                // Rewarded video ad is loaded and ready to be displayed
-//                //Toast.makeText(requireContext(), "Rewarded video ad is loaded and ready to be displayed!", Toast.LENGTH_SHORT).show()
-//                //Log.d(TAG, "Rewarded video ad is loaded and ready to be displayed!")
-//                progressBar.visibility = View.GONE
-//                rewardedVideoAd!!.show()
-//
-//            }
-//
-//            override fun onAdClicked(ad: Ad) {
-//                // Rewarded video ad clicked
-//                //Toast.makeText(requireContext(), "Rewarded video ad clicked!", Toast.LENGTH_SHORT).show()
-//               // Log.d(TAG, "Rewarded video ad clicked!")
-//            }
-//
-//            override fun onLoggingImpression(ad: Ad) {
-//                // Rewarded Video ad impression - the event will fire when the
-//                // video starts playing
-//                //Toast.makeText(requireContext(), "Rewarded video ad impression logged!", Toast.LENGTH_SHORT).show()
-//
-//                //Log.d(TAG, "Rewarded video ad impression logged!")
-//            }
-//
-//            override fun onRewardedVideoCompleted() {
-//                // Rewarded Video View Complete - the video has been played to the end.
-//                // You can use this event to initialize your reward
-//                //Toast.makeText(requireContext(), "Rewarded video completed!", Toast.LENGTH_SHORT).show()
-//                //Log.d(TAG, "Rewarded video completed!")
-//                var prefereceStuffs = Preferencestuff(requireContext())
-//                var newpoints = prefereceStuffs.getPoint() + 20
-//                prefereceStuffs.setPoint(newpoints)
-//                Toast.makeText(requireContext(), "20 Points Added", Toast.LENGTH_LONG).show()
-//
-//                // Call method to give reward
-//                // giveReward();
-//            }
-//
-//            override fun onRewardedVideoClosed() {
-//                // The Rewarded Video ad was closed - this can occur during the video
-//                // by closing the app, or closing the end card.
-//                //Toast.makeText(requireContext(), "Rewarded video ad closed!", Toast.LENGTH_SHORT).show()
-//                //Log.d(TAG, "Rewarded video ad closed!")
-//            }
-//        }
-//        rewardedVideoAd!!.loadAd(
-//                rewardedVideoAd!!.buildLoadAdConfig()
-//                        .withAdListener(rewardedVideoAdListener)
-//                        .build())
-//    }
     private fun confirmtopurchase(){
         var view = Dialog(requireContext())
         view.setCancelable(true)

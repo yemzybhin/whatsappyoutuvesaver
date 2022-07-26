@@ -56,74 +56,6 @@ fun isOnline(context: Context): Boolean {
     }
     return false
 }
-fun watchad(link : String, points : Int, context: Context, todo : String){
-    var view = Dialog(context)
-    view.setCancelable(true)
-    view.setContentView(R.layout.watchad)
-    view.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-    view.show()
-    var yeswatch = view.findViewById<TextView>(R.id.yeswatch)
-    var title = view.findViewById<TextView>(R.id.title)
-    var point = view.findViewById<TextView>(R.id.points)
-    var comment = view.findViewById<TextView>(R.id.comment)
-
-    title.text = "$todo requires $points points"
-    var preferencestuff = Preferencestuff(context)
-    var currentpoint = preferencestuff.getPoint()
-
-
-    point.text = "$currentpoint Points"
-    if (currentpoint >= points){
-        comment.text = "You Have Enough Points"
-        yeswatch.setBackgroundResource(R.color.primarycolor3)
-        yeswatch.setTextColor(Color.parseColor("#203640"))
-        when(todo){
-            "Youtube Video Download" -> {
-                yeswatch.text = "Download Video"
-            }
-            "Whatsapp Save Image" -> {
-                yeswatch.text = "Save Image"
-            }
-            "Whatsapp Save Video" -> {
-                yeswatch.text = "Save Video"
-            }
-        }
-    }else{
-        comment.text = "You Do Not Have Enough Points"
-        yeswatch.setBackgroundResource(R.color.primarycolor1)
-        yeswatch.setTextColor(Color.parseColor("#FFFFFFFF"))
-    }
-    yeswatch.setOnClickListener {
-        if (currentpoint >= points){
-            when(todo){
-//                "Youtube Video Download" -> {
-//                    if (isOnline(context) == true){
-//                        downloadvideo(link, context)
-//                        Toast.makeText(context, "Please Wait!!", Toast.LENGTH_SHORT).show()
-//                    }else{
-//                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
-//                    }
-//                }
-                "Whatsapp Save Image" -> {
-
-                }
-                "Whatsapp Save Video" -> {
-
-                }
-            }
-
-        }else{
-            loading(context)
-            Handler().postDelayed({
-                var intent = Intent(context , Activity2 :: class.java)
-                intent.putExtra("FragmentToSetTo", "Abouts")
-                context.startActivity(intent)
-            },0)
-        }
-
-        view.dismiss()
-    }
-}
 fun loading(context: Context){
     var load = Dialog(context)
     load.setCancelable(false)
@@ -140,50 +72,6 @@ fun String.CheckEmpty(): Boolean{
         return false
     }
 }
-//fun downloadvideo(values : String, context: Context){
-//    var filename = "AllDownloader_${System.currentTimeMillis()}.mp4"
-//    var newlink = ""
-//    var youTubeUriExtractor = object  : YouTubeUriExtractor(context){
-//        override fun onExtractionComplete(
-//                ytFiles: SparseArray<YtFile>?,
-//                videoMeta: VideoMeta?
-//        ) {
-//            if(ytFiles != null){
-//                super.onExtractionComplete(ytFiles, videoMeta)
-//            }else{
-//                Toast.makeText(context, "Could not extract video link", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//        override fun onUrisAvailable(
-//                videoId: String?,
-//                videoTitle: String?,
-//                ytFiles: SparseArray<YtFile>?
-//        ) {
-//            if (ytFiles!=null){
-//                var tag = 22
-//                newlink = ytFiles.get(tag).url
-//                //Log.e("to copy the ytfile", "${ytFiles.get(tag)}")
-//                //Toast.makeText(requireContext(), "me", Toast.LENGTH_SHORT).show()
-//                var title = "$videoTitle"
-//                var request = DownloadManager.Request(Uri.parse(newlink))
-//
-//                var preferencestuff = Preferencestuff(context)
-//                preferencestuff.setPoint(preferencestuff.getPoint() - 10)
-//
-//                request.setTitle(title)
-//                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
-//                val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-//                request.allowScanningByMediaScanner()
-//                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
-//                manager!!.enqueue(request)
-//
-//                Toast.makeText(context, "Download Starting, 10 points removed", Toast.LENGTH_SHORT).show()
-//            }
-//        }
-//    }
-//    youTubeUriExtractor.execute(values)
-//}
 fun galleryrefresh(context: Context, file: File){
     var contentUri = Uri.fromFile(file)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){

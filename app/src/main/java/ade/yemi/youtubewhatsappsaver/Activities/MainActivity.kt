@@ -41,7 +41,6 @@ class MainActivity : AppCompatActivity() {
 
 
         var whatsapp = findViewById<CardView>(R.id.whatsappcard)
-//        var youtube = findViewById<CardView>(R.id.youtubecard)
         var points = findViewById<TextView>(R.id.pointcount)
         var abouts = findViewById<CardView>(R.id.abouts)
         var adspace = findViewById<CardView>(R.id.adspace)
@@ -66,15 +65,6 @@ class MainActivity : AppCompatActivity() {
                     checkperm21()
                 }
         }
-//        youtube.setOnClickListener {
-//            youtube.clicking()
-//            loading()
-//            Handler().postDelayed({
-//                intent.putExtra("FragmentToSetTo", "Youtube")
-//                startActivity(intent)
-//            },0)
-//        }
-
         abouts.setOnClickListener {
             abouts.clicking()
             loading()
@@ -195,18 +185,7 @@ class MainActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    //Toast.makeText(requireContext(), "local storage", Toast.LENGTH_SHORT).show()
                 }
-//                if (response.isSuccessful) {
-//
-//                } else {
-//                    try {
-//                        var jObjError = JSONObject(response.errorBody().toString())
-//                        Toast.makeText(requireContext(), jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show()
-//                    } catch (e: Exception) {
-//                        Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_LONG).show()
-//                    }
-//                }
             }
         })
     }
