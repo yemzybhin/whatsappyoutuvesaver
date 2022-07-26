@@ -1,18 +1,20 @@
 package ade.yemi.moreapps.models
 
+import com.google.gson.annotations.SerializedName
+
 data class AllAppDetails(
-        val message: String? = null,
-        val apps: List<App>,
-        val success: Boolean
+        @SerializedName("message")val message: String? = null,
+        @SerializedName("apps")val apps: List<App>,
+        @SerializedName("success")val success: Boolean
 )
 data class App(
-        val _id: String? = null,
-        val name: String? = null,
-        val playStoreUrl: String? = null,
-        val appIconUrl: String? = null,
-        val createdAt: String? = null,
-        val updatedAt: String? = null,
-        val version: Int? = 0
+        @SerializedName("_id")val _id: String? = null,
+        @SerializedName("name")val name: String? = null,
+        @SerializedName("playStoreUrl")val playStoreUrl: String? = null,
+        @SerializedName("appIconUrl")val appIconUrl: String? = null,
+        @SerializedName("createdAt")val createdAt: String? = null,
+        @SerializedName("updatedAt")val updatedAt: String? = null,
+        @SerializedName("version")val version: Int? = 0
 )
 
 

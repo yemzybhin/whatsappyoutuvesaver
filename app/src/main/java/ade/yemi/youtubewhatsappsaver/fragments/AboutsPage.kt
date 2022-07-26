@@ -9,8 +9,7 @@ import ade.yemi.youtubewhatsappsaver.Activities.MainActivity
 import ade.yemi.youtubewhatsappsaver.Adapters.MoreAppsAdapter
 import ade.yemi.youtubewhatsappsaver.Data.Preferencestuff
 import ade.yemi.youtubewhatsappsaver.R
-import ade.yemi.youtubewhatsappsaver.Ultilities.CheckEmpty
-import ade.yemi.youtubewhatsappsaver.Ultilities.clicking
+import ade.yemi.youtubewhatsappsaver.Ultilities.*
 import android.app.Dialog
 import android.content.Intent
 import android.graphics.Color
@@ -358,8 +357,8 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
 
         call?.enqueue(object : Callback<AllAppDetails?> {
             override fun onResponse(
-                    call: Call<AllAppDetails?>,
-                    response: Response<AllAppDetails?>
+                call: Call<AllAppDetails?>,
+                response: Response<AllAppDetails?>
             ) {
                 var appDetails: AllAppDetails? = response.body() as AllAppDetails
                 var applist = appDetails?.apps
@@ -370,12 +369,28 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
                 }
                 retry.visibility = View.GONE
                 loader.visibility = View.GONE
+
+                var touse = AppToJsonString(appDetails!!)
+                Preferencestuff(requireContext()).setloacalApps(touse)
             }
 
             override fun onFailure(call: Call<AllAppDetails?>, t: Throwable) {
-                Toast.makeText(requireContext(), "Could not load Apps. Check connection", Toast.LENGTH_SHORT).show()
-                retry.visibility = View.VISIBLE
+
+                var touse = Preferencestuff(requireContext()).getlocalApps()
+                if (touse != ""){
+                    var appContent = generateApps(requireContext(), touse!!)
+                    var applist = appContent?.apps
+                    recyclerView.apply {
+                        myAdapter = MoreAppsAdapter(applist!!)
+                        layoutManager = manager
+                        adapter = myAdapter
+                    }
+                }else{
+                    Toast.makeText(requireContext(), "Could not load Apps. Check connection", Toast.LENGTH_SHORT).show()
+                    retry.visibility = View.VISIBLE
+                }
                 loader.visibility = View.GONE
+
             }
         })
     }
@@ -444,8 +459,8 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         var call =API.post
         call?.enqueue(object : Callback<AppContent?> {
             override fun onResponse(
-                    call: Call<AppContent?>,
-                    response: Response<AppContent?>
+                call: Call<AppContent?>,
+                response: Response<AppContent?>
             ) {
                 var appContent: AppContent? = response.body() as AppContent
                 var adslist = appContent?.ads
@@ -455,7 +470,7 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
                     adcheck = true
                     if (adslist!![0].SmallImagelink!!.CheckEmpty() != true) {
                         Glide.with(requireContext()).load(adslist!![0].SmallImagelink).centerCrop()
-                                .into(adimage)
+                            .into(adimage)
                     } else {
                         adimage.visibility = View.GONE
                         adspace.visibility = View.VISIBLE
@@ -471,17 +486,65 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
                             startActivity(launchBrowser)
                         } else {
                             Toast.makeText(
-                                    requireContext(),
-                                    "${adslist!![0].Description}",
-                                    Toast.LENGTH_SHORT
+                                requireContext(),
+                                "${adslist!![0].Description}",
+                                Toast.LENGTH_SHORT
                             ).show()
                         }
                     }
                 }
+                var touse = AdToJsonString(appContent!!)
+                Preferencestuff(requireContext()).setLocalAds(touse)
+                //  Toast.makeText(requireContext(), "$appContent", Toast.LENGTH_SHORT).show()
             }
 
             override fun onFailure(call: Call<AppContent?>, t: Throwable) {
                 adspace.visibility = View.GONE
+                var touse = Preferencestuff(requireContext()).getLocalAds()
+                if (touse != ""){
+                    var appContent = generateAds(requireContext(), touse!!)
+                    var adslist = appContent?.ads
+
+                    if (adslist!![0].visible != false) {
+                        adspace.visibility = View.VISIBLE
+                        adcheck = true
+                        if (adslist!![0].SmallImagelink!!.CheckEmpty() != true) {
+                            Glide.with(requireContext()).load(adslist!![0].SmallImagelink).centerCrop()
+                                .into(adimage)
+                        } else {
+                            adimage.visibility = View.GONE
+                            adspace.visibility = View.VISIBLE
+                        }
+                        message.text = adslist!![0].message
+                        val animation = AnimationUtils.loadAnimation(context, R.anim.adscale)
+                        adspace.startAnimation(animation)
+                        adspace.setOnClickListener {
+                            adspace.clicking()
+                            if (adslist!![0].Link != "") {
+                                val uriUri = Uri.parse(adslist!![0].Link)
+                                val launchBrowser = Intent(Intent.ACTION_VIEW, uriUri)
+                                startActivity(launchBrowser)
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    "${adslist!![0].Description}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                    //Toast.makeText(requireContext(), "local storage", Toast.LENGTH_SHORT).show()
+                }
+//                if (response.isSuccessful) {
+//
+//                } else {
+//                    try {
+//                        var jObjError = JSONObject(response.errorBody().toString())
+//                        Toast.makeText(requireContext(), jObjError.getJSONObject("error").getString("message"), Toast.LENGTH_LONG).show()
+//                    } catch (e: Exception) {
+//                        Toast.makeText(requireContext(), "${e.message}", Toast.LENGTH_LONG).show()
+//                    }
+//                }
             }
         })
     }

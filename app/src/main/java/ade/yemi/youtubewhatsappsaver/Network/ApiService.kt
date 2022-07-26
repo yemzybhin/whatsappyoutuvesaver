@@ -2,7 +2,6 @@ package ade.yemi.moreapps.Network
 
 import ade.yemi.moreapps.models.AllAppDetails
 import ade.yemi.moreapps.models.AppContent
-import ade.yemi.moreapps.models.ShowYoutubeLayout
 import retrofit2.Call
 import retrofit2.http.GET
 
@@ -26,11 +25,11 @@ interface  RetrofitInterface{
 
 }
 
-interface RetrofitInterface2{
-    @get:GET("jsonholder/youtubewhatsappsavershow1.json")
-    val post: Call<ShowYoutubeLayout?>?
-
-    companion object{
-        const val BASE_URL = "https://yemzybhin.github.io"
-    }
-}
+//interface RetrofitInterface2{
+//    @get:GET("jsonholder/youtubewhatsappsavershow1.json")
+//    val post: Call<ShowYoutubeLayout?>?
+//
+//    companion object{
+//        const val BASE_URL = "https://yemzybhin.github.io"
+//    }
+//}

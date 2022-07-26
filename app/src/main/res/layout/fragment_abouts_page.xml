@@ -211,7 +211,7 @@
                 android:layout_marginRight="20dp"
                 android:fontFamily="@font/productsansregular"
                 android:lineSpacingExtra="4dp"
-                android:text="The Youtube WhatsApp saver app is an app which makes it easier to download youtube videos for offline views. Also, whatsapp statuses can be readily downloaded to device gallery by a single click."
+                android:text="@string/summary"
                 android:textColor="@color/textcolor"
                 android:textSize="15sp"></TextView>
 

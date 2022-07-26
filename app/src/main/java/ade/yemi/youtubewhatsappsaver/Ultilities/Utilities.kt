@@ -1,5 +1,7 @@
 package ade.yemi.youtubewhatsappsaver.Ultilities
 
+import ade.yemi.moreapps.models.AllAppDetails
+import ade.yemi.moreapps.models.AppContent
 import ade.yemi.youtubewhatsappsaver.Activities.Activity2
 import ade.yemi.youtubewhatsappsaver.Data.Preferencestuff
 import ade.yemi.youtubewhatsappsaver.R
@@ -19,10 +21,8 @@ import android.util.SparseArray
 import android.view.View
 import android.view.animation.AnimationUtils
 import android.widget.TextView
-import android.widget.Toast
-import at.huber.youtubeExtractor.VideoMeta
-import at.huber.youtubeExtractor.YouTubeUriExtractor
-import at.huber.youtubeExtractor.YtFile
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.File
 
 
@@ -96,14 +96,14 @@ fun watchad(link : String, points : Int, context: Context, todo : String){
     yeswatch.setOnClickListener {
         if (currentpoint >= points){
             when(todo){
-                "Youtube Video Download" -> {
-                    if (isOnline(context) == true){
-                        downloadvideo(link, context)
-                        Toast.makeText(context, "Please Wait!!", Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
-                    }
-                }
+//                "Youtube Video Download" -> {
+//                    if (isOnline(context) == true){
+//                        downloadvideo(link, context)
+//                        Toast.makeText(context, "Please Wait!!", Toast.LENGTH_SHORT).show()
+//                    }else{
+//                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show()
+//                    }
+//                }
                 "Whatsapp Save Image" -> {
 
                 }
@@ -140,50 +140,50 @@ fun String.CheckEmpty(): Boolean{
         return false
     }
 }
-fun downloadvideo(values : String, context: Context){
-    var filename = "AllDownloader_${System.currentTimeMillis()}.mp4"
-    var newlink = ""
-    var youTubeUriExtractor = object  : YouTubeUriExtractor(context){
-        override fun onExtractionComplete(
-                ytFiles: SparseArray<YtFile>?,
-                videoMeta: VideoMeta?
-        ) {
-            if(ytFiles != null){
-                super.onExtractionComplete(ytFiles, videoMeta)
-            }else{
-                Toast.makeText(context, "Could not extract video link", Toast.LENGTH_SHORT).show()
-            }
-        }
-        override fun onUrisAvailable(
-                videoId: String?,
-                videoTitle: String?,
-                ytFiles: SparseArray<YtFile>?
-        ) {
-            if (ytFiles!=null){
-                var tag = 22
-                newlink = ytFiles.get(tag).url
-                //Log.e("to copy the ytfile", "${ytFiles.get(tag)}")
-                //Toast.makeText(requireContext(), "me", Toast.LENGTH_SHORT).show()
-                var title = "$videoTitle"
-                var request = DownloadManager.Request(Uri.parse(newlink))
-
-                var preferencestuff = Preferencestuff(context)
-                preferencestuff.setPoint(preferencestuff.getPoint() - 10)
-
-                request.setTitle(title)
-                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
-                val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                request.allowScanningByMediaScanner()
-                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
-                manager!!.enqueue(request)
-
-                Toast.makeText(context, "Download Starting, 10 points removed", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
-    youTubeUriExtractor.execute(values)
-}
+//fun downloadvideo(values : String, context: Context){
+//    var filename = "AllDownloader_${System.currentTimeMillis()}.mp4"
+//    var newlink = ""
+//    var youTubeUriExtractor = object  : YouTubeUriExtractor(context){
+//        override fun onExtractionComplete(
+//                ytFiles: SparseArray<YtFile>?,
+//                videoMeta: VideoMeta?
+//        ) {
+//            if(ytFiles != null){
+//                super.onExtractionComplete(ytFiles, videoMeta)
+//            }else{
+//                Toast.makeText(context, "Could not extract video link", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//        override fun onUrisAvailable(
+//                videoId: String?,
+//                videoTitle: String?,
+//                ytFiles: SparseArray<YtFile>?
+//        ) {
+//            if (ytFiles!=null){
+//                var tag = 22
+//                newlink = ytFiles.get(tag).url
+//                //Log.e("to copy the ytfile", "${ytFiles.get(tag)}")
+//                //Toast.makeText(requireContext(), "me", Toast.LENGTH_SHORT).show()
+//                var title = "$videoTitle"
+//                var request = DownloadManager.Request(Uri.parse(newlink))
+//
+//                var preferencestuff = Preferencestuff(context)
+//                preferencestuff.setPoint(preferencestuff.getPoint() - 10)
+//
+//                request.setTitle(title)
+//                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+//                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename)
+//                val manager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+//                request.allowScanningByMediaScanner()
+//                request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE)
+//                manager!!.enqueue(request)
+//
+//                Toast.makeText(context, "Download Starting, 10 points removed", Toast.LENGTH_SHORT).show()
+//            }
+//        }
+//    }
+//    youTubeUriExtractor.execute(values)
+//}
 fun galleryrefresh(context: Context, file: File){
     var contentUri = Uri.fromFile(file)
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
@@ -194,4 +194,32 @@ fun galleryrefresh(context: Context, file: File){
     }else{
         context.sendBroadcast(Intent(Intent.ACTION_MEDIA_MOUNTED, contentUri))
     }
+}
+
+fun AdToJsonString(appContent : AppContent) : String{
+    val gson = Gson()
+    val json = gson.toJson(appContent)
+    return json
+}
+
+fun generateAds(context: Context, jsonString : String) : AppContent {
+    val jsonFileString = jsonString
+    val gson = Gson()
+    val listQuestionType = object : TypeToken<AppContent>() {}.type
+    var Question1models: AppContent = gson.fromJson(jsonFileString, listQuestionType)
+    return Question1models
+}
+
+fun AppToJsonString(appDetails: AllAppDetails) : String{
+    val gson = Gson()
+    val json = gson.toJson(appDetails)
+    return json
+}
+
+fun generateApps(context: Context, jsonString : String) : AllAppDetails {
+    val jsonFileString = jsonString
+    val gson = Gson()
+    val listQuestionType = object : TypeToken<AllAppDetails>() {}.type
+    var Question1models: AllAppDetails = gson.fromJson(jsonFileString, listQuestionType)
+    return Question1models
 }

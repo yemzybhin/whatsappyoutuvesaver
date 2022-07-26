@@ -18,4 +18,20 @@ class Preferencestuff {
     fun getPoint(): Int{
         return sharef!!.getInt("points", 0)
     }
+    fun setLocalAds(adsString: String){
+        var editor = sharef!!.edit()
+        editor.putString("localAds", adsString)
+        editor.commit()
+    }
+    fun getLocalAds(): String?{
+        return sharef!!.getString("localAds", "")
+    }
+    fun setloacalApps(appString: String){
+        var editor = sharef!!.edit()
+        editor.putString("localApps", appString)
+        editor.commit()
+    }
+    fun getlocalApps(): String?{
+        return sharef!!.getString("localApps", "")
+    }
 }

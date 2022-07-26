@@ -53,6 +53,7 @@ class Activity2 : AppCompatActivity() {
         startActivity(Intent(this, MainActivity::class.java))
        // super.onBackPressed()
     }
+
     internal fun replacefragment(fragment: Fragment) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -101,7 +102,6 @@ class Activity2 : AppCompatActivity() {
         load.setContentView(R.layout.loading_popuup)
         load.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         load.show()
-
     }
 
 }
