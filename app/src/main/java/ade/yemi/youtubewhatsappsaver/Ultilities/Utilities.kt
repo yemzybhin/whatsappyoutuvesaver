@@ -111,3 +111,9 @@ fun generateApps(context: Context, jsonString : String) : AllAppDetails {
     var Question1models: AllAppDetails = gson.fromJson(jsonFileString, listQuestionType)
     return Question1models
 }
+
+fun maptojsonString(touse : Map<String, String>) : String{
+    val gson = Gson()
+    val json = gson.toJson(touse)
+    return json
+}
