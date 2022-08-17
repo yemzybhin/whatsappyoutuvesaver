@@ -17,7 +17,7 @@ import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ImageFrag : BaseViewStubFragment(){
+class ImageFrag(var whatsappType : String) : BaseViewStubFragment(){
     companion object {
         const val WHATSAPP_STATUS_FOLDER_PATH = "/WhatsApp/Media/.Statuses/"
         const val WHATSAPP_STATUS_FOLDER_PATH2 = "/WhatsApp Business/Media/.Statuses/"
@@ -32,7 +32,7 @@ class ImageFrag : BaseViewStubFragment(){
         recyclerView?.layoutManager = gridLayoutManager
         recyclerView?.setHasFixedSize(true)
 
-        var imagepaths = getImagePath()
+        var imagepaths = getImagePath(whatsappType)
         imageAdapter = ImageAdapter(imagepaths, requireContext())
         recyclerView?.adapter = imageAdapter
     }

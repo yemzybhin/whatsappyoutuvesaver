@@ -23,7 +23,8 @@ class Activity2 : AppCompatActivity() {
         var incomming = intent.getStringExtra("FragmentToSetTo")
         when(incomming){
             "Whatsapp" -> {
-                var fragment = WhatsappPage()
+                var incomming2 = intent.getStringExtra("WhatsAppType")
+                var fragment = WhatsappPage(incomming2!!)
                 replacefragment(fragment)
             }
             "Abouts" -> {

@@ -33,10 +33,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
-
         var whatsapp = findViewById<CardView>(R.id.whatsappcard)
+        var whatsappBusiness = findViewById<CardView>(R.id.whatsappbusinesscard)
         var points = findViewById<TextView>(R.id.pointcount)
         var abouts = findViewById<CardView>(R.id.abouts)
         var adspace = findViewById<CardView>(R.id.adspace)
@@ -60,11 +58,25 @@ class MainActivity : AppCompatActivity() {
                     loading()
                     Handler().postDelayed({
                     intent.putExtra("FragmentToSetTo", "Whatsapp")
+                    intent.putExtra("WhatsAppType", "WhatsApp")
                     startActivity(intent)
                    }, 0)
                 }else{
                     checkperm21()
                 }
+        }
+        whatsappBusiness.setOnClickListener {
+            whatsappBusiness.clicking()
+            if (checkpermmission1() == true){
+                loading()
+                Handler().postDelayed({
+                    intent.putExtra("FragmentToSetTo", "Whatsapp")
+                    intent.putExtra("WhatsAppType", "whatsappBusiness")
+                    startActivity(intent)
+                }, 0)
+            }else{
+                checkperm21()
+            }
         }
         abouts.setOnClickListener {
             abouts.clicking()

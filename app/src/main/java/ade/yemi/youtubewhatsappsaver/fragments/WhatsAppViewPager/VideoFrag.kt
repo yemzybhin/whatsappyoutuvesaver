@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
-class VideoFrag : BaseViewStubFragment() {
+class VideoFrag(var WhatsAppType : String): BaseViewStubFragment() {
     companion object {
         const val WHATSAPP_STATUS_FOLDER_PATHH = "/WhatsApp/Media/.Statuses/"
         const val WHATSAPP_STATUS_FOLDER_PATHH2 = "/WhatsApp Business/Media/.Statuses/"
@@ -30,7 +30,7 @@ class VideoFrag : BaseViewStubFragment() {
         recyclerView?.layoutManager = gridLayoutManager
         recyclerView?.setHasFixedSize(true)
 
-        var videoPath = getVideoPath()
+        var videoPath = getVideoPath(WhatsAppType)
         videoAdapter = VideoAdapter(videoPath, requireContext())
         recyclerView?.adapter = videoAdapter
     }

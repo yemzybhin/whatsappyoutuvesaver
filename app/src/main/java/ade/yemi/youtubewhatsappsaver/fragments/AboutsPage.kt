@@ -28,9 +28,17 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.billingclient.api.*
 import com.bumptech.glide.Glide
+import com.facebook.ads.Ad
+import com.facebook.ads.AudienceNetworkAds
+import com.facebook.ads.RewardedVideoAd
+import com.facebook.ads.RewardedVideoAdListener
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
+import com.unity3d.mediation.*
+import com.unity3d.mediation.errors.LoadError
+import com.unity3d.mediation.errors.SdkInitializationError
+import com.unity3d.mediation.errors.ShowError
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,8 +46,15 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 
-
+const val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6CfO87Dd5XZ1qFEte8Yx3iDG66swL5P/mawmeb/cNSFv2kO3r1GHae/TnHhnAcSdQaHRaV7bEFsJg/rp11UzshKQtu2WobCj49MfEHgrK12dOGLF2Tfbc5RMloCZu+ciSDZeuAhcnOBrCs1uNe6uqNNpmqTwHtH2MvSCxMDK/lzMH7DJ2uBvMup4OloGcIf8kiubMw86oG/6VdCyB+qzv3VRobDu+ov/o4yvidGtR8Hy8Ud5FNf43XomPLcT6O4/1BiwSP3KKDkZ0hnMA3jd1aGMo5RLX9ABaB32yTwiPTiS2xFnjRoyf0XofVgS8Bw4uSm1Zhd7IwuMBsscxiUJ9wIDAQAB"
 const val AD_UNIT_ID = "ca-app-pub-2144911759176506/5399035215"
+const val PREF_FILE = "MyPref"
+const val PURCHASE_KEY = "consumable"
+const val PRODUCT_ID = "consumable1"
+
+const val UNITY_GAME_ID = "4889511"
+const val UNITYREWARDED_ID = "Rewarded_Android"
+const val FACEBOOK_AD_UNIT = "429889565196930_429890685196818"   //App id -> 1217060465749626_1217125615743111
 
 class AboutsPage : Fragment() , PurchasesUpdatedListener {
     private var billingClient: BillingClient? = null
@@ -51,11 +66,26 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
     private var mIsLoading = false
     private var mRewardedAd: RewardedAd? = null
     private var adcheck = false
+    private var admobvisible = false
 
     override fun onCreateView(
             inflater: LayoutInflater, container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        var initializationConfiguration = InitializationConfiguration.builder()
+            .setGameId(UNITY_GAME_ID)
+            .setInitializationListener(object : IInitializationListener {
+                override fun onInitializationComplete() {
+                }
+
+                override fun onInitializationFailed(p0: SdkInitializationError?, p1: String?) {
+                }
+            }).build()
+
+        UnityMediation.initialize(initializationConfiguration)
+        MobileAds.initialize(requireContext()) {}
+        AudienceNetworkAds.initialize(requireContext())
+
         var view = inflater.inflate(R.layout.fragment_abouts_page, container, false)
         var recyclerView = view.findViewById<RecyclerView>(R.id.rv_moreapps)
         var retry = view.findViewById<TextView>(R.id.tv_retry)
@@ -68,6 +98,15 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         var loadad = view.findViewById<Button>(R.id.Loadadd)
         var admessage = view.findViewById<TextView>(R.id.message)
         var ad2 = view.findViewById<Button>(R.id.Loadadd2)
+
+        var admobspace = view.findViewById<CardView>(R.id.admobadspace)
+        var facebookspace = view.findViewById<CardView>(R.id.facebookadspace)
+        var unityspace = view.findViewById<CardView>(R.id.unityadspace)
+//        appLovinSpace = view.findViewById(R.id.applovinSpace)
+
+        admobspace.visibility = View.GONE
+        facebookspace.visibility = View.GONE
+        unityspace.visibility = View.GONE
 
         ad2.setOnClickListener {
             ad2.clicking()
@@ -105,7 +144,6 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         loader.visibility = View.VISIBLE
         retry.visibility = View.GONE
 
-        MobileAds.initialize(requireContext()) {}
 
         //initializing facebook ads
        // AudienceNetworkAds.initialize(requireContext())
@@ -124,20 +162,18 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         }
         loadad.setOnClickListener {
             loadad.clicking()
-            when(loadad.text){
-                "Load Ad: +20 Points" -> {
-                    loadRewardedAd(adprogress, loadad)
-                    Toast.makeText(requireContext(), "Ad is loading. Please Wait", Toast.LENGTH_SHORT).show()
-                }
-                "Success!! View Ad" -> {
-                    val animation = AnimationUtils.loadAnimation(context, R.anim.adstagnant)
-                    loadad.startAnimation(animation)
-                    showRewardedVideo(adprogress, loadad)
-                    loadad.text = "Load Ad: +20 Points"
-                }
-                else->{
-
-                }
+            if(unityspace.visibility == View.VISIBLE || admobspace.visibility == View.VISIBLE || facebookspace.visibility == View.VISIBLE){
+                Toast.makeText(
+                    requireContext(),
+                    "There is still an AD yet to be viewed",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }else{
+                adprogress.visibility = View.VISIBLE
+                Toast.makeText(requireContext(), "Ad is loading. Please Wait", Toast.LENGTH_LONG).show()
+                unityadscon(adprogress, unityspace, facebookspace)
+                loadRewardedAdAdmob(adprogress, admobspace)
+//                AppLovinrewardedAd.loadAd()
             }
         }
         cancel.setOnClickListener {
@@ -149,6 +185,126 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         }
         return view
     }
+    private fun unityadscon(adprogress: ProgressBar, cardView: CardView, cardView2: CardView){
+        var rewarded = com.unity3d.mediation.RewardedAd(requireActivity(), UNITYREWARDED_ID)
+        rewarded.load(object : IRewardedAdLoadListener {
+            override fun onRewardedLoaded(p0: com.unity3d.mediation.RewardedAd?) {
+                cardView.visibility = View.VISIBLE
+                adprogress.visibility = View.GONE
+                Toast.makeText(requireContext(), "Ad is loaded. Click to view Ad.",Toast.LENGTH_SHORT).show()
+                var animation = AnimationUtils.loadAnimation(requireContext(), R.anim.adscale)
+                cardView.startAnimation(animation)
+                cardView.setOnClickListener {
+                    cardView.clicking()
+                    rewarded.show(object : IRewardedAdShowListener {
+                        override fun onRewardedShowed(p0: com.unity3d.mediation.RewardedAd?) {
+                            //Toast.makeText(requireActivity(), "3", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onRewardedClicked(p0: com.unity3d.mediation.RewardedAd?) {
+                            //   Toast.makeText(requireActivity(), "4", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onRewardedClosed(p0: com.unity3d.mediation.RewardedAd?) {
+                            //Toast.makeText(requireActivity(), "5", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onRewardedFailedShow(
+                            p0: com.unity3d.mediation.RewardedAd?,
+                            p1: ShowError?,
+                            p2: String?
+                        ) {
+                            //   Toast.makeText(requireActivity(), "6 $p1 $p2", Toast.LENGTH_SHORT).show()
+                        }
+
+                        override fun onUserRewarded(
+                            p0: com.unity3d.mediation.RewardedAd?,
+                            p1: IReward?
+                        ) {
+                            // Toast.makeText(requireActivity(), "7", Toast.LENGTH_SHORT).show()
+                            var prefereceStuffs = Preferencestuff(requireContext())
+                            var newpoints = prefereceStuffs.getPoint() + 20
+                            prefereceStuffs.setPoint(newpoints)
+                            //  Toast.makeText(requireContext(), "20 Points Added", Toast.LENGTH_LONG).show()
+                        }
+                    })
+                    Handler().postDelayed({
+                        cardView.visibility = View.GONE
+                    }, 2000)
+
+                }
+            }
+
+            override fun onRewardedFailedLoad(
+                p0: com.unity3d.mediation.RewardedAd?,
+                p1: LoadError?,
+                p2: String?
+            ) {
+                  Toast.makeText(requireContext(), "${p1}, $p2", Toast.LENGTH_SHORT).show()
+                if (admobvisible !== true) {
+                    loadfacebookad(adprogress, cardView2)
+                    adprogress.visibility = View.VISIBLE
+                    cardView.visibility = View.GONE
+                } else {
+                    adprogress.visibility = View.GONE
+                }
+            }
+
+        })
+    }
+    private fun loadfacebookad(progressBar: ProgressBar, cardView: CardView){
+        var rewardedVideoAd = RewardedVideoAd(requireContext(), FACEBOOK_AD_UNIT)
+
+        val rewardedVideoAdListener: RewardedVideoAdListener = object : RewardedVideoAdListener {
+            override fun onError(ad: Ad?, error: com.facebook.ads.AdError) {
+                // Rewarded video ad failed to load
+                Toast.makeText(
+                    requireContext(),
+                    "Rewarded video ad failed to load: ${error.errorMessage}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                progressBar.visibility = View.GONE
+                // Log.e(TAG, "Rewarded video ad failed to load: " + error.getErrorMessage())
+            }
+            override fun onAdLoaded(ad: Ad) {
+                progressBar.visibility = View.GONE
+                cardView.visibility = View.VISIBLE
+                var animation = AnimationUtils.loadAnimation(requireContext(), R.anim.adscale)
+                cardView.startAnimation(animation)
+                cardView.setOnClickListener {
+                    cardView.clicking()
+                    rewardedVideoAd.show()
+                    cardView.visibility = View.GONE
+                }
+            }
+
+            override fun onAdClicked(ad: Ad) {
+            }
+            override fun onLoggingImpression(ad: Ad) {
+
+            }
+
+            override fun onRewardedVideoCompleted() {
+                var prefereceStuffs = Preferencestuff(requireContext())
+                var newpoints = prefereceStuffs.getPoint() + 20
+                prefereceStuffs.setPoint(newpoints)
+                Toast.makeText(requireContext(), "20 Points Added", Toast.LENGTH_LONG).show()
+            }
+
+            override fun onRewardedVideoClosed() {
+                // The Rewarded Video ad was closed - this can occur during the video
+                // by closing the app, or closing the end card.
+                //Toast.makeText(requireContext(), "Rewarded video ad closed!", Toast.LENGTH_SHORT).show()
+                //Log.d(TAG, "Rewarded video ad closed!")
+            }
+        }
+        rewardedVideoAd!!.loadAd(
+            rewardedVideoAd!!.buildLoadAdConfig()
+                .withAdListener(rewardedVideoAdListener)
+                .build()
+        )
+    }
+
     private fun confirmtopurchase(){
         var view = Dialog(requireContext())
         view.setCancelable(true)
@@ -270,7 +426,6 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
      */
     private fun verifyValidSignature(signedData: String, signature: String): Boolean {
         return try {
-            val base64Key = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA6CfO87Dd5XZ1qFEte8Yx3iDG66swL5P/mawmeb/cNSFv2kO3r1GHae/TnHhnAcSdQaHRaV7bEFsJg/rp11UzshKQtu2WobCj49MfEHgrK12dOGLF2Tfbc5RMloCZu+ciSDZeuAhcnOBrCs1uNe6uqNNpmqTwHtH2MvSCxMDK/lzMH7DJ2uBvMup4OloGcIf8kiubMw86oG/6VdCyB+qzv3VRobDu+ov/o4yvidGtR8Hy8Ud5FNf43XomPLcT6O4/1BiwSP3KKDkZ0hnMA3jd1aGMo5RLX9ABaB32yTwiPTiS2xFnjRoyf0XofVgS8Bw4uSm1Zhd7IwuMBsscxiUJ9wIDAQAB"
                     ade.yemi.youtubewhatsappsaver.Ultilities.Security.verifyPurchase(base64Key, signedData, signature)
         } catch (e: IOException) {
             false
@@ -281,11 +436,6 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
         if (billingClient != null) {
             billingClient!!.endConnection()
         }
-    }
-    companion object {
-        const val PREF_FILE = "MyPref"
-        const val PURCHASE_KEY = "consumable"
-        const val PRODUCT_ID = "consumable1"
     }
     private fun getdata(loader: ProgressBar, retry: TextView, recyclerView: RecyclerView){
         var rf = Retrofit.Builder()
@@ -335,6 +485,77 @@ class AboutsPage : Fragment() , PurchasesUpdatedListener {
             }
         })
     }
+    private fun loadRewardedAdAdmob(progressBar: ProgressBar, admobspace: CardView) {
+
+        if (mRewardedAd == null) {
+            mIsLoading = true
+            var adRequest = AdRequest.Builder().build()
+            RewardedAd.load(
+                requireContext(), AD_UNIT_ID, adRequest,
+                object : RewardedAdLoadCallback() {
+                    override fun onAdFailedToLoad(adError: LoadAdError) {
+//                            Toast.makeText(requireContext(), "Ad failed to load, check your connection.", Toast.LENGTH_SHORT).show()
+                        //loadfacebookad(progressBar)
+                        admobvisible = false
+                        //progressBar.visibility = View.GONE
+                        mIsLoading = false
+                        mRewardedAd = null
+                    }
+
+                    val animation = AnimationUtils.loadAnimation(context,R.anim.adscale)
+                    override fun onAdLoaded(rewardedAd: RewardedAd) {
+                        Toast.makeText(
+                            requireContext(),
+                            "Ad is loaded, click the button to view",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        admobspace.visibility = View.VISIBLE
+                        admobvisible = true
+                        admobspace.startAnimation(animation)
+                        //progressBar.visibility = View.GONE
+                        mRewardedAd = rewardedAd
+                        mIsLoading = false
+                        admobspace.setOnClickListener {
+                            admobspace.clicking()
+                            showRewardedVideoAdmob(progressBar, admobspace)
+                            admobspace.visibility = View.GONE
+                        }
+                    }
+                }
+            )
+        }
+    }
+    private fun showRewardedVideoAdmob(progressBar: ProgressBar, admobss: CardView) {
+        admobss.visibility = View.GONE
+        if (mRewardedAd != null) {
+            mRewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    // Don't forget to set the ad reference to null so you
+                    // don't show the ad a second time.
+                    mRewardedAd = null
+                    //loadRewardedAd(progressBar, load)
+                }
+                override fun onAdFailedToShowFullScreenContent(adError: AdError?) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Ad failed to show, Check Connection",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    mRewardedAd = null
+                }
+                override fun onAdShowedFullScreenContent() {
+                    // Called when ad is dismissed.
+                }
+            }
+            mRewardedAd?.show(this.requireActivity(), OnUserEarnedRewardListener() {
+                var prefereceStuffs = Preferencestuff(requireContext())
+                var newpoints = prefereceStuffs.getPoint() + 20
+                prefereceStuffs.setPoint(newpoints)
+                Toast.makeText(requireContext(), "20 Points Added", Toast.LENGTH_LONG).show()
+            })
+        }
+    }
+
     private fun showRewardedVideo(progressBar: ProgressBar, load: Button) {
         if (mRewardedAd != null) {
             mRewardedAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
